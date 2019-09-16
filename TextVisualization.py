@@ -5,9 +5,11 @@ import collections
 from wordcloud import WordCloud, ImageColorGenerator
 import matplotlib.pyplot as plt
 from PIL import Image
+from string import punctuation
 
-set(stopwords.words('english'))
+stop_words = set(stopwords.words("english")+['”','“'])
 saved_img_path = "/media/ekbana/ekbana500/MY GITHUB/Text-Visualization/saved_img/"
+
 class TextVisualization:
     def __init__(self,text=None,image_path=None,top_n=10,save_img=False):
         self.text = text
@@ -15,10 +17,12 @@ class TextVisualization:
         self.save_img = save_img
         self.stopwords = set(stopwords.words('english'))
         self.image_path = image_path
-        self.word_list = nltk.word_tokenize(self.text)
+        self.word_list = [w for w in nltk.word_tokenize(self.text) if w not in stop_words and w not in punctuation]
         self.freq = collections.Counter(self.word_list)
         self.freq_dict = dict(self.freq)
 
+    def word_freq(self):
+        return self.freq_dict
 
     def word_cloud(self):
         text = " ".join([(k + " ") * v for k, v in self.freq_dict.items()])
