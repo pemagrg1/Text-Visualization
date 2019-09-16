@@ -42,6 +42,16 @@ class TextVisualization:
             plt.savefig(saved_img_path + "word_barplot.jpg")
         plt.show()
 
+    def word_pieplot(self):
+        top_10 = self.freq.most_common(self.top_n)
+        freq_dict = dict(top_10)
+        fig = plt.figure()
+        fig.suptitle('Pie Plot of top 10 words', fontsize=20)
+        plt.pie((freq_dict.values()),labels=freq_dict.keys(),autopct='%1.2f',startangle=90)
+        plt.axis('equal')
+        if self.save_img:
+            plt.savefig(saved_img_path + "word_pie_plot.jpg")
+        plt.show()
 
     def word_mask(self):
         image_mask = np.array(Image.open(self.image_path))
@@ -68,16 +78,15 @@ class TextVisualization:
                               )
         wordcloud.generate(self.text)
 
+        image_colors = ImageColorGenerator(image_mask)
+        plt.imshow(image_mask, cmap=plt.cm.gray, interpolation="None")
+        plt.imshow(wordcloud.recolor(color_func=image_colors), interpolation='None')
         if self.save_img:
             file_name = self.image_path.split("/")[-1]
             wordcloud.to_file(saved_img_path+ "word_color_pattern_"+file_name)
-
-        image_colors = ImageColorGenerator(image_mask)
-        plt.imshow(image_mask, cmap=plt.cm.gray, interpolation="None")
-        plt.imshow(wordcloud.recolor(color_func=image_colors), alpha=.8,
-                   interpolation='None')
         plt.axis("off")
         plt.show()
+
 
 
 
